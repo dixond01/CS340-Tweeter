@@ -38,7 +38,7 @@ const PostStatus = () => {
       setIsLoading(false);
     }
   };
-
+  //move this to a service class
   const postStatus = async (
     authToken: AuthToken,
     newStatus: Status,
