@@ -75,6 +75,17 @@ export class RegisterPresenter {
     return file.name.split(".").pop();
   };
 
+  public checkSubmitButtonStatus(firstName: string, lastName: string, alias: string, password: string, imageUrl: string): boolean {
+    return (
+      !firstName
+      || !lastName
+      || !alias
+      || !password
+      || !imageUrl
+      || !this.imageFileExtension
+    );
+  };
+
   public async doRegister(
     firstName: string,
     lastName: string,

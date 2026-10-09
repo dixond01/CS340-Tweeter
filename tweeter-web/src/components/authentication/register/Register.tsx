@@ -39,17 +39,6 @@ const Register = () => {
     presenterRef.current = new RegisterPresenter(listener);
   }
 
-  const checkSubmitButtonStatus = (): boolean => {
-    return (
-      !firstName
-      || !lastName
-      || !alias
-      || !password
-      || !imageUrl
-      || !presenterRef.current!.imageFileExtension
-    );
-  };
-
   const doRegister = (): void => {
     presenterRef.current!.doRegister(
       firstName,
@@ -62,7 +51,16 @@ const Register = () => {
   };
 
   const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
+    if (
+      event.key == "Enter"
+      && !presenterRef.current!.checkSubmitButtonStatus(
+        firstName,
+        lastName,
+        alias,
+        password,
+        imageUrl,
+      )
+    ) {
       doRegister();
     }
   };
