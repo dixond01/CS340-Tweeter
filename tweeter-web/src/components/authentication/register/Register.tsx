@@ -50,17 +50,18 @@ const Register = () => {
     );
   };
 
+  const checkSubmitButtonStatus = (): boolean => {
+    return presenterRef.current!.checkSubmitButtonStatus(
+      firstName,
+      lastName,
+      alias,
+      password,
+      imageUrl,
+    );
+  };
+
   const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (
-      event.key == "Enter"
-      && !presenterRef.current!.checkSubmitButtonStatus(
-        firstName,
-        lastName,
-        alias,
-        password,
-        imageUrl,
-      )
-    ) {
+    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
       doRegister();
     }
   };
