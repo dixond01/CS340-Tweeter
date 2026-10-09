@@ -1,6 +1,5 @@
 import { Status, AuthToken } from "tweeter-shared";
 import { StatusService } from "../model.service/StatusService";
-import { UserItemView } from "./UserItemPresenter";
 
 export interface StatusItemView {
   addItems: (newItems: Status[]) => void;

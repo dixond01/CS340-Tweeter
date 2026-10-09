@@ -1,5 +1,3 @@
-import { AuthToken, Status, User } from "tweeter-shared";
-import { StatusService } from "../model.service/StatusService";
 import { Toast } from "../components/toaster/Toast";
 
 export interface ToasterView {
