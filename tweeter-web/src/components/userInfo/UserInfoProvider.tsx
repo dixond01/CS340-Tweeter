@@ -1,46 +1,20 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { User, AuthToken } from "tweeter-shared";
 import { UserInfoContext, UserInfoActionsContext } from "./UserInfoContexts";
-import { UserInfo } from "./UserInfo";
-
-const CURRENT_USER_KEY: string = "CurrentUserKey";
-const AUTH_TOKEN_KEY: string = "AuthTokenKey";
+import { UserInfoProviderPresenter } from "../../presenter/UserInfoProviderPresenter";
 
 interface Props {
   children: React.ReactNode;
 }
 
 const UserInfoProvider: React.FC<Props> = ({ children }) => {
-  const saveToLocalStorage = (
-    currentUser: User,
-    authToken: AuthToken
-  ): void => {
-    localStorage.setItem(CURRENT_USER_KEY, currentUser.toJson());
-    localStorage.setItem(AUTH_TOKEN_KEY, authToken.toJson());
-  };
-
-  const retrieveFromLocalStorage = (): UserInfo => {
-    const loggedInUser = User.fromJson(localStorage.getItem(CURRENT_USER_KEY));
-    const authToken = AuthToken.fromJson(localStorage.getItem(AUTH_TOKEN_KEY));
-
-    if (!!loggedInUser && !!authToken) {
-      return {
-        currentUser: loggedInUser,
-        displayedUser: loggedInUser,
-        authToken: authToken,
-      };
-    } else {
-      return { currentUser: null, displayedUser: null, authToken: null };
-    }
-  };
-
-  const clearLocalStorage = (): void => {
-    localStorage.removeItem(CURRENT_USER_KEY);
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-  };
+  const presenterRef = useRef<UserInfoProviderPresenter | null>(null);
+  if (!presenterRef.current) {
+    presenterRef.current = new UserInfoProviderPresenter();
+  }
 
   const [userInfo, setUserInfo] = useState({
-    ...retrieveFromLocalStorage(),
+    ...presenterRef.current!.retrieveFromLocalStorage(),
   });
 
   const updateUserInfo = useCallback(
@@ -48,7 +22,7 @@ const UserInfoProvider: React.FC<Props> = ({ children }) => {
       currentUser: User,
       displayedUser: User | null,
       authToken: AuthToken,
-      remember: boolean = false
+      remember: boolean = false,
     ) => {
       setUserInfo(() => {
         return {
@@ -59,10 +33,10 @@ const UserInfoProvider: React.FC<Props> = ({ children }) => {
       });
 
       if (remember) {
-        saveToLocalStorage(currentUser, authToken);
+        presenterRef.current!.saveToLocalStorage(currentUser, authToken);
       }
     },
-    []
+    [],
   );
 
   const clearUserInfo = useCallback(() => {
@@ -74,7 +48,7 @@ const UserInfoProvider: React.FC<Props> = ({ children }) => {
       };
     });
 
-    clearLocalStorage();
+    presenterRef.current!.clearLocalStorage();
   }, []);
 
   const setDisplayedUser = useCallback((user: User) => {
@@ -89,7 +63,7 @@ const UserInfoProvider: React.FC<Props> = ({ children }) => {
       clearUserInfo,
       setDisplayedUser,
     }),
-    [updateUserInfo, clearUserInfo, setDisplayedUser]
+    [updateUserInfo, clearUserInfo, setDisplayedUser],
   );
 
   return (
