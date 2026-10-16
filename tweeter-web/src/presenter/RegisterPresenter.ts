@@ -91,7 +91,8 @@ export class RegisterPresenter extends Presenter<RegisterView>{
     rememberMe: boolean,
   ) {
     try {
-      this.view.setIsLoading(true);
+      this.doFailureReportingOperation(async () => {
+        this.view.setIsLoading(true);
 
       const [user, authToken] = await this._authService.register(
         firstName,
@@ -104,10 +105,7 @@ export class RegisterPresenter extends Presenter<RegisterView>{
 
       this.view.updateUserInfo(user, user, authToken, rememberMe);
       this.view.navigate(`/feed/${user.alias}`);
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to register user because of exception: ${error}`,
-      );
+      }, "register user");
     } finally {
       this.view.setIsLoading(false);
     }

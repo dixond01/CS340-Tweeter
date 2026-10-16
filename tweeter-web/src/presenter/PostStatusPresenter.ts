@@ -13,37 +13,44 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
   private _statusService: StatusService;
 
   public constructor(view: PostStatusView) {
-    super(view)
+    super(view);
     this._statusService = new StatusService();
   }
 
-  public async submitPost(post: string, currentUser: User, authToken: AuthToken): Promise<void> {
+  public async submitPost(
+    post: string,
+    currentUser: User,
+    authToken: AuthToken,
+  ): Promise<void> {
     var postingStatusToastId = "";
 
     try {
-      this.view.setIsLoading(true);
-      postingStatusToastId = this.view.displayInfoMessage(
-        "Posting status...",
-        0,
-      );
+      this.doFailureReportingOperation(async () => {
+        this.view.setIsLoading(true);
+        postingStatusToastId = this.view.displayInfoMessage(
+          "Posting status...",
+          0,
+        );
 
-      const status = new Status(post, currentUser, Date.now());
+        const status = new Status(post, currentUser, Date.now());
 
-      await this._statusService.postStatus(authToken!, status);
+        await this._statusService.postStatus(authToken!, status);
 
-      this.view.setPost("");
-      this.view.displayInfoMessage("Status posted!", 2000);
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to post the status because of exception: ${error}`,
-      );
+        this.view.setPost("");
+        this.view.displayInfoMessage("Status posted!", 2000);
+      }, "post the status");
     } finally {
       this.view.deleteMessage(postingStatusToastId);
       this.view.setIsLoading(false);
     }
   }
 
-  public checkButtonStatus (post: string, authToken: AuthToken, currentUser: User, isLoading: boolean): boolean {
+  public checkButtonStatus(
+    post: string,
+    authToken: AuthToken,
+    currentUser: User,
+    isLoading: boolean,
+  ): boolean {
     return !post.trim() || !authToken || !currentUser || isLoading;
-  };
+  }
 }
