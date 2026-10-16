@@ -1,8 +1,9 @@
 import { Buffer } from "buffer";
 import { AuthService } from "../model.service/AuthService";
 import { User, AuthToken } from "tweeter-shared";
+import { View, Presenter } from "./Presenter";
 
-export interface RegisterView {
+export interface RegisterView extends View {
   setImageUrl: (url: string) => void;
   setImageBytes: (bytes: Uint8Array) => void;
   setIsLoading: (value: boolean) => void;
@@ -13,17 +14,15 @@ export interface RegisterView {
     remember: boolean,
   ) => void;
   navigate: (path: string) => void;
-  displayErrorMessage: (message: string) => void;
 }
 
-export class RegisterPresenter {
-  private _view: RegisterView;
+export class RegisterPresenter extends Presenter<RegisterView>{
   private _authService: AuthService;
 
   private _imageFileExtension = "";
 
   public constructor(view: RegisterView) {
-    this._view = view;
+    super(view);
     this._authService = new AuthService();
   }
   public get imageFileExtension(): string {
@@ -34,9 +33,6 @@ export class RegisterPresenter {
   }
   public get authService(): AuthService {
     return this._authService;
-  }
-  public get view(): RegisterView {
-    return this._view;
   }
 
   handleImageFile = (file: File | undefined) => {
@@ -56,7 +52,7 @@ export class RegisterPresenter {
           "base64",
         );
 
-        this._view.setImageBytes(bytes);
+        this.view.setImageBytes(bytes);
       };
       reader.readAsDataURL(file);
 
