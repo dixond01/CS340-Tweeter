@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { User } from "tweeter-shared";
 import { useParams } from "react-router-dom";
-import UserItem from "../userItem/UserItem";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfoActions, useUserInfo } from "../userInfo/UserInfoHooks";
-import { UserItemPresenter } from "../../presenter/UserItemPresenter";
-import { PagedItemPresenter, PagedItemView } from "../../presenter/PagedItemPresenter";
+import {
+  PagedItemPresenter,
+  PagedItemView,
+} from "../../presenter/PagedItemPresenter";
 import { Service } from "../../model.service/Service";
 
 interface Props<T, U extends Service> {
@@ -15,7 +15,7 @@ interface Props<T, U extends Service> {
   itemFactory: (item: T, featurePath: string) => JSX.Element;
 }
 
-const ItemScroller = <T,U extends Service>(props: Props<T, U>) => {
+const ItemScroller = <T, U extends Service>(props: Props<T, U>) => {
   const { displayErrorMessage } = useMessageActions();
   const [items, setItems] = useState<T[]>([]);
 

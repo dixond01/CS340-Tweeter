@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Status, Type } from "tweeter-shared";
-import useUserNavigation from "../userNavigation/UserNavigationHook";
+import useUserNavigation from "../../userNavigation/UserNavigationHook";
 
 interface Props {
   status: Status;
@@ -17,7 +17,9 @@ const Post = (props: Props) => {
           <Link
             key={index}
             to={`${props.featurePath}/${segment.text}`}
-            onClick={async (event) => await navigateToUser(event, props.featurePath)}
+            onClick={async (event) =>
+              await navigateToUser(event, props.featurePath)
+            }
           >
             {segment.text}
           </Link>
@@ -34,7 +36,7 @@ const Post = (props: Props) => {
           <br key={index} />
         ) : (
           segment.text
-        )
+        ),
       )}
     </>
   );
