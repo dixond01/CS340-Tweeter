@@ -7,6 +7,7 @@ import {
   UserInfoPresenter,
   UserInfoView,
 } from "../../presenter/UserInfoPresenter";
+import { FollowActionButton } from "./FollowActionButton";
 
 const UserInfo = () => {
   const [isFollower, setIsFollower] = useState(false);
@@ -42,7 +43,11 @@ const UserInfo = () => {
   }
 
   useEffect(() => {
-    presenterRef.current!.setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
+    presenterRef.current!.setIsFollowerStatus(
+      authToken!,
+      currentUser!,
+      displayedUser!,
+    );
     presenterRef.current!.setNumbFollowees(authToken!, displayedUser!);
     presenterRef.current!.setNumbFollowers(authToken!, displayedUser!);
   }, [displayedUser]);
@@ -114,43 +119,21 @@ const UserInfo = () => {
               {!displayedUser.equals(currentUser) && (
                 <div className="form-group">
                   {isFollower ? (
-                    <button
+                    <FollowActionButton
                       id="unFollowButton"
-                      className="btn btn-md btn-secondary me-1"
-                      type="submit"
-                      style={{ width: "6em" }}
-                      disabled={isLoading}
-                      onClick={unfollowDisplayedUser}
-                    >
-                      {isLoading ? (
-                        <span
-                          className="spinner-border spinner-border-sm"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                      ) : (
-                        <div>Unfollow</div>
-                      )}
-                    </button>
+                      btnLevel="secondary"
+                      isLoading={isLoading}
+                      followAction={unfollowDisplayedUser}
+                      label="Unfollow"
+                    />
                   ) : (
-                    <button
+                    <FollowActionButton
                       id="followButton"
-                      className="btn btn-md btn-primary me-1"
-                      type="submit"
-                      style={{ width: "6em" }}
-                      disabled={isLoading}
-                      onClick={followDisplayedUser}
-                    >
-                      {isLoading ? (
-                        <span
-                          className="spinner-border spinner-border-sm"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                      ) : (
-                        <div>Follow</div>
-                      )}
-                    </button>
+                      btnLevel="primary"
+                      isLoading={isLoading}
+                      followAction={followDisplayedUser}
+                      label="Follow"
+                    />
                   )}
                 </div>
               )}
