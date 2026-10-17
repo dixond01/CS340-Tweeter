@@ -1,4 +1,4 @@
-import { AuthToken, Status } from "tweeter-shared";
+import { Status } from "tweeter-shared";
 import { useState, useEffect, useRef } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import StatusItem from "../statusItem/StatusItem";
@@ -6,16 +6,12 @@ import { useParams } from "react-router-dom";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfoActions, useUserInfo } from "../userInfo/UserInfoHooks";
 import useUserNavigation from "../userNavigation/UserNavigationHook";
-import {
-  StatusItemPresenter,
-  StatusItemView,
-} from "../../presenter/StatusItemPresenter";
-
-export const PAGE_SIZE = 10;
+import { StatusItemPresenter } from "../../presenter/StatusItemPresenter";
+import { PagedItemView } from "../../presenter/PagedItemPresenter";
 
 interface Props {
   featureUrl: string;
-  presenterFactory: (view: StatusItemView) => StatusItemPresenter;
+  presenterFactory: (view: PagedItemView<Status>) => StatusItemPresenter;
 }
 
 const StatusItemScroller = (props: Props) => {
@@ -27,7 +23,7 @@ const StatusItemScroller = (props: Props) => {
   const { displayedUser: displayedUserAliasParam } = useParams();
   const { getUser } = useUserNavigation();
 
-  const listener: StatusItemView = {
+  const listener: PagedItemView<Status> = {
     addItems: (newItems: Status[]) =>
       setItems((previousItems) => [...previousItems, ...newItems]),
     displayErrorMessage: displayErrorMessage,
@@ -65,8 +61,8 @@ const StatusItemScroller = (props: Props) => {
   };
 
   const loadMoreItems = async () => {
-    presenterRef.current!.loadMoreItems(authToken!, displayedUser!.alias)
-  }
+    presenterRef.current!.loadMoreItems(authToken!, displayedUser!.alias);
+  };
 
   return (
     <div className="container px-0 overflow-visible vh-100">
