@@ -10,6 +10,7 @@ import {
   RegisterPresenter,
   RegisterView,
 } from "../../../presenter/RegisterPresenter";
+import { InputField } from "../InputField";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -39,6 +40,16 @@ const Register = () => {
     presenterRef.current = new RegisterPresenter(listener);
   }
 
+  const checkSubmitButtonStatus = (): boolean => {
+    return presenterRef.current!.checkSubmitButtonStatus(
+      firstName,
+      lastName,
+      alias,
+      password,
+      imageUrl,
+    );
+  };
+
   const doRegister = async (): Promise<void> => {
     await presenterRef.current!.doRegister(
       firstName,
@@ -50,54 +61,29 @@ const Register = () => {
     );
   };
 
-  const checkSubmitButtonStatus = (): boolean => {
-    return presenterRef.current!.checkSubmitButtonStatus(
-      firstName,
-      lastName,
-      alias,
-      password,
-      imageUrl,
-    );
-  };
-
   const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
     if (event.key == "Enter" && !checkSubmitButtonStatus()) {
       doRegister();
     }
   };
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    presenterRef.current!.handleImageFile(file);
-  };
-
   const inputFieldFactory = () => {
     return (
       <>
-        <div className="form-floating">
-          <input
-            type="text"
-            className="form-control"
-            size={50}
-            id="firstNameInput"
-            placeholder="First Name"
-            onKeyDown={registerOnEnter}
-            onChange={(event) => setFirstName(event.target.value)}
-          />
-          <label htmlFor="firstNameInput">First Name</label>
-        </div>
-        <div className="form-floating">
-          <input
-            type="text"
-            className="form-control"
-            size={50}
-            id="lastNameInput"
-            placeholder="Last Name"
-            onKeyDown={registerOnEnter}
-            onChange={(event) => setLastName(event.target.value)}
-          />
-          <label htmlFor="lastNameInput">Last Name</label>
-        </div>
+        <InputField
+          id="firstNameInput"
+          placeholder="First Name"
+          eventOnEnter={registerOnEnter}
+          setter={setFirstName}
+          label="First Name"
+        />
+        <InputField
+          id="lastNameInput"
+          placeholder="Last Name"
+          eventOnEnter={registerOnEnter}
+          setter={setLastName}
+          label="Last Name"
+        />
         <AuthenticationFields
           eventOnEnter={registerOnEnter}
           setAlias={setAlias}
@@ -128,6 +114,11 @@ const Register = () => {
         Algready registered? <Link to="/login">Sign in</Link>
       </div>
     );
+  };
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    presenterRef.current!.handleImageFile(file);
   };
 
   return (
