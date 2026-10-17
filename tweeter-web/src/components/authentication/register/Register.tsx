@@ -39,8 +39,8 @@ const Register = () => {
     presenterRef.current = new RegisterPresenter(listener);
   }
 
-  const doRegister = (): void => {
-    presenterRef.current!.doRegister(
+  const doRegister = async (): Promise<void> => {
+    await presenterRef.current!.doRegister(
       firstName,
       lastName,
       alias,

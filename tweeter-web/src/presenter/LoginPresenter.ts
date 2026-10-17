@@ -32,6 +32,6 @@ export class LoginPresenter extends AuthenticationPresenter<LoginView> {
       navigate = originalUrl;
     }
 
-    this.doAuthOperation(sendLogin, rememberMe, "log User", navigate);
+    await this.doAuthOperation(sendLogin, rememberMe, "log User", navigate);
   }
 }

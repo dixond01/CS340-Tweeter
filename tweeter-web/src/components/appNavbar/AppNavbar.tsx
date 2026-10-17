@@ -29,7 +29,7 @@ const AppNavbar = () => {
   }
 
   const logOut = async () => {
-    presenterRef.current!.logOut(authToken!);
+    await presenterRef.current!.logOut(authToken!);
   };
 
   return (

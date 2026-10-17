@@ -38,8 +38,8 @@ const Login = (props: Props) => {
     return presenterRef.current!.checkSubmitButtonStatus(alias, password);
   };
 
-  const doLogin = (): void => {
-    presenterRef.current!.doLogin(
+  const doLogin = async (): Promise<void> => {
+    await presenterRef.current!.doLogin(
       alias,
       password,
       rememberMe,

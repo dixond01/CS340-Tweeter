@@ -32,7 +32,7 @@ export abstract class AuthenticationPresenter<T extends AuthenticationView> exte
     navigationPath?: string,
   ) {
     try {
-      this.doFailureReportingOperation(async () => {
+      await this.doFailureReportingOperation(async () => {
         this.view.setIsLoading(true);
 
         const [user, authToken] = await authOperation();

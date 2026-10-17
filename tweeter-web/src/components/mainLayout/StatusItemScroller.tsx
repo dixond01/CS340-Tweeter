@@ -21,7 +21,6 @@ const StatusItemScroller = (props: Props) => {
   const { displayedUser, authToken } = useUserInfo();
   const { setDisplayedUser } = useUserInfoActions();
   const { displayedUser: displayedUserAliasParam } = useParams();
-  const { getUser } = useUserNavigation();
 
   const listener: PagedItemView<Status> = {
     addItems: (newItems: Status[]) =>
@@ -41,7 +40,7 @@ const StatusItemScroller = (props: Props) => {
       && displayedUserAliasParam
       && displayedUserAliasParam != displayedUser!.alias
     ) {
-      getUser(authToken!, displayedUserAliasParam!).then((toUser) => {
+      presenterRef.current!.getUser(authToken!, displayedUserAliasParam!).then((toUser) => {
         if (toUser) {
           setDisplayedUser(toUser);
         }
@@ -61,7 +60,7 @@ const StatusItemScroller = (props: Props) => {
   };
 
   const loadMoreItems = async () => {
-    presenterRef.current!.loadMoreItems(authToken!, displayedUser!.alias);
+    await presenterRef.current!.loadMoreItems(authToken!, displayedUser!.alias);
   };
 
   return (

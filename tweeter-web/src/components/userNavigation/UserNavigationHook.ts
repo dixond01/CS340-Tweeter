@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { AuthToken } from "tweeter-shared";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "../userInfo/UserInfoHooks";
 import { UserNavigationPresenter } from "../../presenter/UserNavigationPresenter";
@@ -37,9 +36,7 @@ const useUserNavigation = () => {
 
   return {
     navigateToUser: (event: React.MouseEvent, featurePath: string) =>
-      navigateToUser(event, featurePath),
-    getUser: (authToken: AuthToken, alias: string) =>
-      presenterRef.current!.getUser(authToken, alias),
+      navigateToUser(event, featurePath)
   };
 };
 
