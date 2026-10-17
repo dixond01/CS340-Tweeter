@@ -36,7 +36,7 @@ export class FollowService implements Service {
     user: User,
   ): Promise<number> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+    return await FakeData.instance.getFolloweeCount(user.alias);
   }
 
   public async getFollowerCount(
@@ -44,7 +44,7 @@ export class FollowService implements Service {
     user: User,
   ): Promise<number> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
+    return await FakeData.instance.getFollowerCount(user.alias);
   }
 
   public async follow(
