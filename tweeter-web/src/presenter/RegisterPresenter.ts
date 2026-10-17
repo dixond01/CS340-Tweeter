@@ -2,37 +2,28 @@ import { Buffer } from "buffer";
 import { AuthService } from "../model.service/AuthService";
 import { User, AuthToken } from "tweeter-shared";
 import { View, Presenter } from "./Presenter";
+import {
+  AuthenticationPresenter,
+  AuthenticationView,
+} from "./AuthenticationPresenter";
 
-export interface RegisterView extends View {
+export interface RegisterView extends AuthenticationView {
   setImageUrl: (url: string) => void;
   setImageBytes: (bytes: Uint8Array) => void;
-  setIsLoading: (value: boolean) => void;
-  updateUserInfo: (
-    currentUser: User,
-    displayedUser: User | null,
-    authToken: AuthToken,
-    remember: boolean,
-  ) => void;
-  navigate: (path: string) => void;
 }
 
-export class RegisterPresenter extends Presenter<RegisterView>{
-  private _authService: AuthService;
+export class RegisterPresenter extends AuthenticationPresenter<RegisterView> {
+  public constructor(view: RegisterView) {
+    super(view);
+  }
 
   private _imageFileExtension = "";
 
-  public constructor(view: RegisterView) {
-    super(view);
-    this._authService = new AuthService();
-  }
   public get imageFileExtension(): string {
     return this._imageFileExtension;
   }
   protected set imageFileExtension(value: string) {
     this._imageFileExtension = value;
-  }
-  public get authService(): AuthService {
-    return this._authService;
   }
 
   handleImageFile = (file: File | undefined) => {
@@ -71,7 +62,13 @@ export class RegisterPresenter extends Presenter<RegisterView>{
     return file.name.split(".").pop();
   };
 
-  public checkSubmitButtonStatus(firstName: string, lastName: string, alias: string, password: string, imageUrl: string): boolean {
+  public checkSubmitButtonStatus(
+    firstName: string,
+    lastName: string,
+    alias: string,
+    password: string,
+    imageUrl: string,
+  ): boolean {
     return (
       !firstName
       || !lastName
@@ -80,7 +77,7 @@ export class RegisterPresenter extends Presenter<RegisterView>{
       || !imageUrl
       || !this.imageFileExtension
     );
-  };
+  }
 
   public async doRegister(
     firstName: string,
@@ -90,11 +87,8 @@ export class RegisterPresenter extends Presenter<RegisterView>{
     imageBytes: Uint8Array,
     rememberMe: boolean,
   ) {
-    try {
-      this.doFailureReportingOperation(async () => {
-        this.view.setIsLoading(true);
-
-      const [user, authToken] = await this._authService.register(
+    const sendRegister = async (): Promise<[User, AuthToken]> => {
+      return await this.service.register(
         firstName,
         lastName,
         alias,
@@ -102,12 +96,8 @@ export class RegisterPresenter extends Presenter<RegisterView>{
         imageBytes,
         this.imageFileExtension,
       );
+    };
 
-      this.view.updateUserInfo(user, user, authToken, rememberMe);
-      this.view.navigate(`/feed/${user.alias}`);
-      }, "register user");
-    } finally {
-      this.view.setIsLoading(false);
-    }
+    await this.doAuthOperation(sendRegister, rememberMe, "registerUser");
   }
 }

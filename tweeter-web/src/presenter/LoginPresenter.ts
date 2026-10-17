@@ -1,24 +1,16 @@
 import { User, AuthToken } from "tweeter-shared";
 import { AuthService } from "../model.service/AuthService";
 import { Presenter, View } from "./Presenter";
+import {
+  AuthenticationPresenter,
+  AuthenticationView,
+} from "./AuthenticationPresenter";
 
-export interface LoginView extends View {
-  setIsLoading: (value: boolean) => void;
-  updateUserInfo: (
-    currentUser: User,
-    displayedUser: User | null,
-    authToken: AuthToken,
-    remember: boolean,
-  ) => void;
-  navigate: (path: string) => void;
-}
+export interface LoginView extends AuthenticationView {}
 
-export class LoginPresenter extends Presenter<LoginView> {
-  private _authService: AuthService;
-
+export class LoginPresenter extends AuthenticationPresenter<LoginView> {
   public constructor(view: LoginView) {
     super(view);
-    this._authService = new AuthService();
   }
 
   public checkSubmitButtonStatus(alias: string, password: string): boolean {
@@ -31,25 +23,15 @@ export class LoginPresenter extends Presenter<LoginView> {
     rememberMe: boolean,
     originalUrl: string | undefined,
   ) {
-    try {
-      this.doFailureReportingOperation(async () => {
-        this.view.setIsLoading(true);
+    const sendLogin = async (): Promise<[User, AuthToken]> => {
+      return await this.service.login(alias, password);
+    };
 
-        const [user, authToken] = await this._authService.login(
-          alias,
-          password,
-        );
-
-        this.view.updateUserInfo(user, user, authToken, rememberMe);
-
-        if (!!originalUrl) {
-          this.view.navigate(originalUrl);
-        } else {
-          this.view.navigate(`/feed/${user.alias}`);
-        }
-      }, "log user");
-    } finally {
-      this.view.setIsLoading(false);
+    let navigate: string | undefined = undefined;
+    if (!!originalUrl) {
+      navigate = originalUrl;
     }
+
+    this.doAuthOperation(sendLogin, rememberMe, "log User", navigate);
   }
 }
