@@ -25,7 +25,7 @@ export class UserNavigationPresenter extends Presenter<UserNavigationView> {
     await this.doFailureReportingOperation(async () => {
       const alias = this.extractAlias(eventTargetString);
 
-      const toUser = await this.getUser(authToken!, alias);
+      const toUser = await this._userService.getUser(authToken!, alias);
 
       if (toUser) {
         if (!toUser.equals(displayedUser!)) {
@@ -40,11 +40,4 @@ export class UserNavigationPresenter extends Presenter<UserNavigationView> {
     const index = value.indexOf("@");
     return value.substring(index);
   };
-
-  public async getUser(
-    authToken: AuthToken,
-    alias: string,
-  ): Promise<User | null> {
-    return await this._userService.getUser(authToken, alias);
-  }
 }

@@ -1,6 +1,4 @@
 import { User, AuthToken } from "tweeter-shared";
-import { AuthService } from "../model.service/AuthService";
-import { Presenter, View } from "./Presenter";
 import {
   AuthenticationPresenter,
   AuthenticationView,
@@ -9,10 +7,6 @@ import {
 export interface LoginView extends AuthenticationView {}
 
 export class LoginPresenter extends AuthenticationPresenter<LoginView> {
-  public constructor(view: LoginView) {
-    super(view);
-  }
-
   public checkSubmitButtonStatus(alias: string, password: string): boolean {
     return !alias || !password;
   }
