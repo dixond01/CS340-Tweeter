@@ -15,6 +15,7 @@ export const InputField = (props: Props) => {
             className="form-control"
             size={50}
             id={props.id}
+            aria-label={props.label.toLowerCase()}
             placeholder={props.placeholder}
             onKeyDown={props.eventOnEnter}
             onChange={(event) => props.setter(event.target.value)}
