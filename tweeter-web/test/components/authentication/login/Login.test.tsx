@@ -11,16 +11,6 @@ import { LoginPresenter } from "../../../../src/presenter/LoginPresenter";
 library.add(fab);
 
 describe("Login Component", () => {
-  async function aliasAndPasswordEnableSignIn() {
-    const { signInButton, aliasField, passwordField, user } =
-      renderLoginAndGetElement("/");
-
-    await user.type(aliasField, "a");
-    await user.type(passwordField, "b");
-
-    expect(signInButton).toBeEnabled();
-    return { signInButton, aliasField, passwordField, user };
-  }
 
   it("starts with the sign-in button is disabled", () => {
     const { signInButton } = renderLoginAndGetElement("/");
