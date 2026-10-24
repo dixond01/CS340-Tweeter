@@ -35,11 +35,6 @@ const Login = (props: Props) => {
     presenterRef.current = props.presenter ?? new LoginPresenter(listener);
   }
 
-  // Create a new presenter whenever 'rememberMe is updated so it will have a listener with the correct 'rememberMe' value
-  useEffect(() => {
-    presenterRef.current = props.presenter ?? new LoginPresenter(listener);
-  }, [rememberMe]);
-
   const checkSubmitButtonStatus = (): boolean => {
     return presenterRef.current!.checkSubmitButtonStatus(alias, password);
   };
